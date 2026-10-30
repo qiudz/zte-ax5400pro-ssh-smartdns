@@ -1,0 +1,21 @@
+# Private backups & decrypted configs (NEVER commit personal router configs!)
+*.bin
+*.xml
+*.gz
+!router_files/**
+smartdns
+smartdns-*
+
+# Keys & credentials
+*.pem
+*.key
+*.pub
+authorized_keys
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+.venv/
+venv/

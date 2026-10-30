@@ -1,0 +1,43 @@
+# SmartDNS 配置文件示例 (部署至路由器: /usercfg/smartdns.conf)
+# 适用固件: 中兴 AX5400 Pro (ZXHN E3630)
+
+server-name smartdns-e3630
+
+# ⚠️ 必须同时开启 UDP (bind) 与 TCP (bind-tcp) 监听，否则大响应包回退 TCP 时会连接被拒
+bind [::]:6053
+bind-tcp [::]:6053
+
+# 性能优化与零闪存磨损设置
+cache-size 8192
+cache-persist no
+prefetch-domain yes
+serve-expired yes
+speed-check-mode ping,tcp:80,tcp:443
+log-level error
+log-file /var/tmp/smartdns/smartdns.log
+log-size 128k
+log-num 1
+
+# 上游并发测速优选 DNS (DoT / DoH / UDP 混合，自动挑选最低延迟结果返回)
+server 223.5.5.5
+server 119.29.29.29
+server 114.114.114.114
+server-tls 223.6.6.6
+server-tls 1.12.12.12
+
+# ==============================================================================
+# 内网真·泛域名解析示例 (请将 example.com 替换为你自己的域名与内网服务 IP)
+# ==============================================================================
+# 1. 泛解析兜底：匹配 example.com 及其下所有二/三级子域名 (如 nas.example.com, media.example.com)
+#    追加 #6 表示对 IPv6 AAAA 查询立即本地返回 SOA，防止内网域名泄漏到上游公网 DNS
+address /example.com/192.168.1.10
+address /example.com/#6
+
+# 2. 最长精确匹配优先：单独将 pc.example.com 指向另一台内网主机，其余子域名仍走上方泛解析兜底
+address /pc.example.com/192.168.1.20
+address /pc.example.com/#6
+
+# ==============================================================================
+# 自动加载内存盘中的 anti-AD 去广告规则 (由 /usercfg/update_adblock.sh 自动拉取更新)
+# ==============================================================================
+conf-file /var/tmp/smartdns/anti-ad.conf

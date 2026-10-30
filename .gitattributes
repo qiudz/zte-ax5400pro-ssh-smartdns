@@ -1,0 +1,7 @@
+# 强制路由器侧脚本与配置文件保持 LF 换行，防止 Windows 下 CRLF 导致 BusyBox /bin/sh 执行失败
+* text=auto
+*.sh text eol=lf
+*.conf text eol=lf
+*.example text eol=lf
+router_files/** text eol=lf
+*.bat text eol=crlf
